@@ -160,3 +160,15 @@ cython_debug/
 #.idea/
 
 /.vscode
+/Cargo.lock
+/Cargo.toml
+/my_kanachan.py
+/pyproject.toml
+/tests
+/src
+/scripts/matching
+/python/mjaisimulator
+/players
+/logs
+/kanachan
+/model/model.kanachan
