@@ -385,7 +385,7 @@ class HandCalculator:
             response = hand_calculator.estimate_hand_value(
                 tiles=tiles, win_tile=hupai, melds=melds, config=config)
             if response.error is not None:
-                if response.error == 'There are no yaku in the hand':
+                if response.error == 'no_yaku':
                     return False
                 raise RuntimeError(response.error)
         except Exception as e:
