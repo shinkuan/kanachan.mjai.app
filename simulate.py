@@ -1,4 +1,4 @@
-from mjaisimulator import Simulator
+from mjai import Simulator
 
 submissions = [
     "players/kanachan.zip",
