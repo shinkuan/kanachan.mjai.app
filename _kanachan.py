@@ -843,7 +843,6 @@ class RoundState:
         combined_hand = self.__my_hand + [self.__zimo_pai]
 
         # 暗槓が候補として追加できるかどうかをチェックする．
-        # TODO: 立直中の送り槓を禁止する．
         counts = Counter()
         for p in combined_hand:
             if p == 0:
@@ -860,6 +859,24 @@ class RoundState:
                 assert(p < 37)
                 counts[p - 3] += 1
         for k, v in counts.items():
+            # 立直中の送り槓を禁止する．
+            if self.is_in_liqi():
+                p = self.__zimo_pai
+                if p == 0:
+                    c = 4
+                elif 1 <= p and p <= 9:
+                    c = p-1
+                elif p == 10:
+                    c = 13
+                elif 11 <= p and p <= 19:
+                    c = p-2
+                elif p == 20:
+                    c = 22
+                elif 21 <= p:
+                    assert(p < 37)
+                    c = p-3
+                if k == c:
+                    continue
             if v >= 4:
                 candidates.append(148 + k)
 
