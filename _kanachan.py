@@ -1052,18 +1052,19 @@ class RoundState:
 
         if not self.__my_liqi:
             # 大明槓ができるかどうかチェックする．
-            # TODO: 河底牌に対する大明槓が可能かどうか確認する．
-            for t, consumed_counts in enumerate(_DAMINGGANG_COUNTS):
-                if tile != t:
-                    continue
-                flag = True
-                for k, v in consumed_counts.items():
-                    if hand_counts[k] < v:
-                        flag = False
-                        break
-                if flag:
-                    candidates.append(432 + relseat * 37 + t)
-                    skippable = True
+            # 河底牌に対する大明槓が可能かどうか確認する．
+            if self.__num_left_tiles > 0:
+                for t, consumed_counts in enumerate(_DAMINGGANG_COUNTS):
+                    if tile != t:
+                        continue
+                    flag = True
+                    for k, v in consumed_counts.items():
+                        if hand_counts[k] < v:
+                            flag = False
+                            break
+                    if flag:
+                        candidates.append(432 + relseat * 37 + t)
+                        skippable = True
 
         combined_hand = self.__my_hand + [tile]
 
