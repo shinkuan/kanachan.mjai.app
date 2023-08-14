@@ -607,6 +607,14 @@ _PENG2GANG = (
 )
 
 
+_TILE34TILE37 = (
+     1, 2, 3, 4, 5, 6, 7, 8, 9,
+    11,12,13,14,15,16,17,18,19,
+    21,22,23,24,25,26,27,28,29,
+    30,31,32,33,34,35,36
+)
+
+
 class GameState:
     def __init__(
         self, *, my_name: str, room: int, game_style: int, my_grade: int,
@@ -1170,8 +1178,13 @@ class RoundState:
         self.__progression.append(1881 + actor * 34 + angang)
 
         if seat != actor:
-            # TODO: 暗槓に対する国士無双の槍槓をチェックする．
-            return None
+            # 暗槓に対する国士無双の槍槓をチェックする．
+            player_wind = (seat + 4 - self.__index) % 4
+            can_ron_kokushi = self.__hand_calculator.check_kokushi(
+                self.__chang, player_wind, self.__my_hand, self.__my_fulu_list,
+                _TILE34TILE37[angang], rong=False)
+            if not can_ron_kokushi:
+                return None
 
         if self.__zimo_pai is None:
             raise RuntimeError('TODO: (A suitable error message)')
