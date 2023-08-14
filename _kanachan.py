@@ -995,9 +995,9 @@ class RoundState:
 
         candidates = []
 
-        if not self.__my_liqi and relseat == 2:
+        if not self.__my_liqi and relseat == 2 and self.__num_left_tiles > 0:
             # チーができるかどうかチェックする．
-            # TODO: 河底牌に対するチーが可能かどうか確認する．
+            # 河底牌に対するチーが可能かどうか確認する．
             for i, (t, consumed_counts) in enumerate(_CHI_COUNTS):
                 if tile != t:
                     continue
@@ -1023,9 +1023,9 @@ class RoundState:
                         candidates.append(222 + i)
                         skippable = True
 
-        if not self.__my_liqi:
+        if not self.__my_liqi and self.__num_left_tiles > 0:
             # ポンができるかどうかチェックする．
-            # TODO: 河底牌に対するポンが可能かどうか確認する．
+            # 河底牌に対するポンが可能かどうか確認する．
             for i, (t, consumed_counts) in enumerate(_PENG_COUNTS):
                 if tile != t:
                     continue
