@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 import warnings
-from _kanachan import Kanachan
+from _kanachan import KanachanBot
 
 
 def main() -> None:
-    kanachan = Kanachan()
-    kanachan.run()
+    kanachan = KanachanBot()
+    kanachan.start()
 
 
 if __name__ == '__main__':
