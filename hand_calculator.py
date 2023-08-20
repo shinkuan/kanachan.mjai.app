@@ -4,6 +4,7 @@ from typing import (List,)
 from mahjong.meld import Meld
 from mahjong.hand_calculating.hand_config import (OptionalRules, HandConfig,)
 from mahjong.hand_calculating.hand import HandCalculator as Impl
+from mahjong.hand_calculating.yaku_list import yakuman
 
 
 _FULU2MELD = {
@@ -307,7 +308,7 @@ class HandCalculator:
         melds = []
 
         # `tiles` には副露牌も含めなければならない．
-        # ただし，槓は3枚としてカウントする．
+        # ただし，槓は4枚としてカウントする．
         for fulu in fulu_list:
             if 148 <= fulu and fulu <= 181:
                 meld = _FULU2MELD[fulu]
@@ -397,3 +398,53 @@ class HandCalculator:
             raise e
 
         return response.han >= 1
+
+    def check_kokushi(
+            self, chang: int, player_wind: int, hand: List[int],
+            fulu_list: List[int], hupai: int, rong: bool):
+        options = OptionalRules(has_open_tanyao=True, has_aka_dora=True)
+        config = HandConfig(
+            is_tsumo=not rong, player_wind=27 + player_wind,
+            round_wind=27 + chang, options=options)
+        
+        hand_calculator = Impl()
+
+        if len(fulu_list) > 0 or len(hand) != 13:
+            return False
+
+        tiles = []
+        for tile in hand:
+            flag = False
+            first, last = _TILE_OFFSET_RANGE[tile]
+            for t in range(first, last):
+                if t not in tiles:
+                    tiles.append(t)
+                    flag = True
+                    break
+            if not flag:
+                raise RuntimeError('TODO: (A suitable error message)')
+        flag = False
+        first, last = _TILE_OFFSET_RANGE[hupai]
+        for t in range(first, last):
+            if t not in tiles:
+                tiles.append(t)
+                flag = True
+                break
+        if not flag:
+            raise RuntimeError('TODO: (A suitable error message)')
+        tiles.sort()
+        hupai = _TILE_OFFSET_RANGE[hupai][0]
+
+        try:
+            response = hand_calculator.estimate_hand_value(
+                tiles=tiles, win_tile=hupai, config=config)
+            if response.error is not None:
+                if response.error == 'no_yaku':
+                    return False
+                raise RuntimeError(response.error)
+        except Exception as e:
+            import sys
+            print(f'tiles = {tiles}', file=sys.stderr)
+            print(f'hupai = {hupai}', file=sys.stderr)
+            raise e
+        return any([isinstance(yaku, yakuman.DaburuKokushiMusou) or isinstance(yaku, yakuman.KokushiMusou) for yaku in response.yaku])

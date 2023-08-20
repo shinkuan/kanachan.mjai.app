@@ -599,10 +599,10 @@ for i, v in enumerate(_NUM2JIAGANG):
     _TILE_TO_JIAGANG_COUNTS.append(counts)
 
 
-_PENG2GANG = (
-    1,2,3,4, 0,5,5, 6,7,8,9,
-    11,12,13,14, 10,15,15, 16,17,18,19,
-    21,22,23,24, 20,25,25, 26,27,28,29,
+_TILE34TILE37 = (
+     1, 2, 3, 4, 5, 6, 7, 8, 9,
+    11,12,13,14,15,16,17,18,19,
+    21,22,23,24,25,26,27,28,29,
     30,31,32,33,34,35,36
 )
 
@@ -843,7 +843,6 @@ class RoundState:
         combined_hand = self.__my_hand + [self.__zimo_pai]
 
         # 暗槓が候補として追加できるかどうかをチェックする．
-        # TODO: 立直中の送り槓を禁止する．
         counts = Counter()
         for p in combined_hand:
             if p == 0:
@@ -860,6 +859,24 @@ class RoundState:
                 assert(p < 37)
                 counts[p - 3] += 1
         for k, v in counts.items():
+            # 立直中の送り槓を禁止する．
+            if self.is_in_liqi():
+                p = self.__zimo_pai
+                if p == 0:
+                    c = 4
+                elif 1 <= p and p <= 9:
+                    c = p-1
+                elif p == 10:
+                    c = 13
+                elif 11 <= p and p <= 19:
+                    c = p-2
+                elif p == 20:
+                    c = 22
+                elif 21 <= p:
+                    assert(p < 37)
+                    c = p-3
+                if k == c:
+                    continue
             if v >= 4:
                 candidates.append(148 + k)
 
@@ -978,9 +995,9 @@ class RoundState:
 
         candidates = []
 
-        if not self.__my_liqi and relseat == 2:
+        if not self.__my_liqi and relseat == 2 and self.__num_left_tiles > 0:
             # チーができるかどうかチェックする．
-            # TODO: 河底牌に対するチーが可能かどうか確認する．
+            # 河底牌に対するチーが可能かどうか確認する．
             for i, (t, consumed_counts) in enumerate(_CHI_COUNTS):
                 if tile != t:
                     continue
@@ -1006,9 +1023,9 @@ class RoundState:
                         candidates.append(222 + i)
                         skippable = True
 
-        if not self.__my_liqi:
+        if not self.__my_liqi and self.__num_left_tiles > 0:
             # ポンができるかどうかチェックする．
-            # TODO: 河底牌に対するポンが可能かどうか確認する．
+            # 河底牌に対するポンが可能かどうか確認する．
             for i, (t, consumed_counts) in enumerate(_PENG_COUNTS):
                 if tile != t:
                     continue
@@ -1035,18 +1052,19 @@ class RoundState:
 
         if not self.__my_liqi:
             # 大明槓ができるかどうかチェックする．
-            # TODO: 河底牌に対する大明槓が可能かどうか確認する．
-            for t, consumed_counts in enumerate(_DAMINGGANG_COUNTS):
-                if tile != t:
-                    continue
-                flag = True
-                for k, v in consumed_counts.items():
-                    if hand_counts[k] < v:
-                        flag = False
-                        break
-                if flag:
-                    candidates.append(432 + relseat * 37 + t)
-                    skippable = True
+            # 河底牌に対する大明槓が可能かどうか確認する．
+            if self.__num_left_tiles > 0:
+                for t, consumed_counts in enumerate(_DAMINGGANG_COUNTS):
+                    if tile != t:
+                        continue
+                    flag = True
+                    for k, v in consumed_counts.items():
+                        if hand_counts[k] < v:
+                            flag = False
+                            break
+                    if flag:
+                        candidates.append(432 + relseat * 37 + t)
+                        skippable = True
 
         combined_hand = self.__my_hand + [tile]
 
@@ -1152,8 +1170,13 @@ class RoundState:
         self.__progression.append(1881 + actor * 34 + angang)
 
         if seat != actor:
-            # TODO: 暗槓に対する国士無双の槍槓をチェックする．
-            return None
+            # 暗槓に対する国士無双の槍槓をチェックする．
+            player_wind = (seat + 4 - self.__index) % 4
+            can_ron_kokushi = self.__hand_calculator.check_kokushi(
+                self.__chang, player_wind, self.__my_hand, self.__my_fulu_list,
+                _TILE34TILE37[angang], rong=False)
+            if not can_ron_kokushi:
+                return None
 
         if self.__zimo_pai is None:
             raise RuntimeError('TODO: (A suitable error message)')
@@ -1221,7 +1244,7 @@ class RoundState:
                 break
         if index is None:
             raise RuntimeError('TODO: (A suitable error message)')
-        self.__my_fulu_list[index] = _PENG2GANG[(self.__my_fulu_list[index] - 312) % 40] + 182
+        self.__my_fulu_list[index] = _PENG_TO_KUIKAE_TILE[(self.__my_fulu_list[index] - 312) % 40] + 182
 
         self.__my_lingshang_zimo = True
 
