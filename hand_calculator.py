@@ -439,7 +439,7 @@ class HandCalculator:
             response = hand_calculator.estimate_hand_value(
                 tiles=tiles, win_tile=hupai, config=config)
             if response.error is not None:
-                if response.error == 'no_yaku':
+                if response.error == 'no_yaku' or response.error == 'hand_not_winning':
                     return False
                 raise RuntimeError(response.error)
         except Exception as e:
