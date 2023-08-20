@@ -91,9 +91,9 @@ class Brain(nn.Module):
     def __init__(self, is_oracle, conv_channels, num_blocks, enable_bn, bn_momentum):
         super().__init__()
         self.is_oracle = is_oracle
-        in_channels = OBS_SHAPE[0]
+        in_channels = obs_shape[0]
         if is_oracle:
-            in_channels += ORACLE_OBS_SHAPE[0]
+            in_channels += oracle_obs_shape[0]
 
         if bn_momentum == 0:
             bn_momentum = None
