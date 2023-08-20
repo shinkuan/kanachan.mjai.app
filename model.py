@@ -8,7 +8,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch.distributions import Normal, Categorical
 from libriichi.mjai import Bot
-from libriichi.consts import OBS_SHAPE, ORACLE_OBS_SHAPE, ACTION_SPACE, GRP_SIZE
+from libriichi.consts import obs_shape, oracle_obs_shape, ACTION_SPACE, GRP_SIZE
 
 
 @torch.jit.script
