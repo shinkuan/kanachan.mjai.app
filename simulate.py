@@ -1,9 +1,10 @@
 from mjai import Simulator
+import random
 
 submissions = [
-    "players/kanachan.zip",
-    "players/tsumogiri.zip",
-    "players/tsumogiri.zip",
-    "players/invalidbot2.zip",
+    "players/weakml.zip",
+    "players/rulebase.zip",
+    "players/rulebase.zip",
+    "players/rulebase.zip",
 ]
-Simulator(submissions, logs_dir="./logs").run()
+Simulator(submissions, logs_dir="./logs", seed=(random.randint(0, 99999), random.randint(0, 99999))).run()
