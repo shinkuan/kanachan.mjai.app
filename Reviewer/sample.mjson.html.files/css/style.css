@@ -1,0 +1,81 @@
+/* These sizes should be even numbers to get good rendering when they are rotated. */
+/* Original size: 33x59 */
+/* Original size: 44x49 */
+.repeated {
+  display: none; }
+
+.pai {
+  width: 16px;
+  height: 30px; }
+
+.laid-pai {
+  width: 22px;
+  height: 26px; }
+
+.board {
+  background-color: green;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 400px;
+  height: 400px; }
+
+.player {
+  /* border: 1px black solid; */
+  width: 400px;
+  position: absolute; }
+
+.player-0 {
+  left: 0px;
+  top: 250px;
+  -webkit-transform: rotate(0deg); }
+
+.player-1 {
+  left: 125px;
+  top: 125px;
+  -webkit-transform: rotate(270deg); }
+
+.player-2 {
+  left: 0px;
+  top: 0px;
+  -webkit-transform: rotate(180deg); }
+
+.player-3 {
+  left: -125px;
+  top: 125px;
+  -webkit-transform: rotate(90deg); }
+
+.wanpais-container {
+  position: absolute;
+  left: 152px;
+  top: 185px; }
+
+.ho {
+  margin-left: 152px;
+  margin-bottom: 30px; }
+
+.furo-container {
+  float: right; }
+
+.tehai-container {
+  margin-left: 88px;
+  float: left; }
+
+.tsumo-pai {
+  margin-left: 4px; }
+
+.player-footer {
+  clear: both; }
+
+.pai-row {
+  height: 30px; }
+
+.controller-container {
+  position: absolute;
+  left: 400px;
+  top: 0px;
+  padding: 8px; }
+
+.log-label {
+  font-family: monospace;
+  white-space: pre; }
